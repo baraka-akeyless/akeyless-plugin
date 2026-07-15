@@ -14,7 +14,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.annotation.Nonnull;
 
 /**
@@ -23,21 +22,20 @@ import javax.annotation.Nonnull;
  */
 public final class PemPkcs12Util {
 
-    private static final Pattern PEM_BLOCK = Pattern.compile(
-            "-----BEGIN ([^-]+)-----\\s*([\\s\\S]*?)-----END \\1-----", Pattern.MULTILINE);
+    private static final Pattern PEM_BLOCK =
+            Pattern.compile("-----BEGIN ([^-]+)-----\\s*([\\s\\S]*?)-----END \\1-----", Pattern.MULTILINE);
 
     private PemPkcs12Util() {}
 
     @Nonnull
     public static java.security.KeyStore buildPkcs12KeyStore(
-            @Nonnull String certificatePem,
-            @Nonnull String privateKeyPem,
-            char[] password) throws GeneralSecurityException, IOException {
+            @Nonnull String certificatePem, @Nonnull String privateKeyPem, char[] password)
+            throws GeneralSecurityException, IOException {
         X509Certificate cert = parseCertificate(certificatePem);
         PrivateKey privateKey = parsePrivateKey(privateKeyPem);
         java.security.KeyStore ks = java.security.KeyStore.getInstance("PKCS12");
         ks.load(null, password);
-        ks.setKeyEntry("akeyless", privateKey, password, new Certificate[]{cert});
+        ks.setKeyEntry("akeyless", privateKey, password, new Certificate[] {cert});
         return ks;
     }
 

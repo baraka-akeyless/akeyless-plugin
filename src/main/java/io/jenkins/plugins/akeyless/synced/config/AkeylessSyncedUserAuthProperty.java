@@ -7,11 +7,10 @@ import hudson.model.UserProperty;
 import hudson.model.UserPropertyDescriptor;
 import io.jenkins.plugins.akeyless.synced.auth.SyncedAuthMethod;
 import io.jenkins.plugins.akeyless.synced.client.AkeylessSyncedClient;
+import java.util.List;
+import javax.annotation.Nullable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Per-user Akeyless authentication (access ID + auth method). Shown on the user's Configure page when

@@ -3,7 +3,6 @@ package io.jenkins.plugins.akeyless.synced.client;
 import hudson.model.User;
 import io.jenkins.plugins.akeyless.synced.config.AkeylessSyncedCredentialsProviderConfig;
 import io.jenkins.plugins.akeyless.synced.config.AkeylessSyncedUserAuthProperty;
-
 import javax.annotation.Nullable;
 
 /**

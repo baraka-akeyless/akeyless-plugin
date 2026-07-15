@@ -11,10 +11,11 @@ import io.akeyless.client.ApiException;
 import io.jenkins.plugins.akeyless.synced.AkeylessSyncedCredentialsProvider;
 import io.jenkins.plugins.akeyless.synced.client.AkeylessSyncedClient;
 import io.jenkins.plugins.akeyless.synced.client.AkeylessSyncedClient.GetSecretValueResult;
-
 import javax.annotation.Nullable;
 
 public class AkeylessSyncedFileCredentials extends AkeylessSyncedCredentialBase implements StandardCredentials {
+
+    private static final long serialVersionUID = 1L;
 
     private final String akeylessPath;
     private final String filename;
@@ -23,7 +24,8 @@ public class AkeylessSyncedFileCredentials extends AkeylessSyncedCredentialBase 
         this(id, akeylessPath, description, filename, null);
     }
 
-    public AkeylessSyncedFileCredentials(String id, String akeylessPath, String description, String filename, @Nullable String ownerUserId) {
+    public AkeylessSyncedFileCredentials(
+            String id, String akeylessPath, String description, String filename, @Nullable String ownerUserId) {
         super(id, description, ownerUserId);
         this.akeylessPath = akeylessPath != null ? akeylessPath : id;
         this.filename = filename != null ? filename : id;
@@ -55,7 +57,9 @@ public class AkeylessSyncedFileCredentials extends AkeylessSyncedCredentialBase 
     public static class DescriptorImpl extends BaseStandardCredentials.BaseStandardCredentialsDescriptor {
         @Override
         @NonNull
-        public String getDisplayName() { return "Akeyless Secret File"; }
+        public String getDisplayName() {
+            return "Akeyless Secret File";
+        }
 
         @Override
         public boolean isApplicable(CredentialsProvider scope) {

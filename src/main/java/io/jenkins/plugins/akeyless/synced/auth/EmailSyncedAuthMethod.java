@@ -4,10 +4,9 @@ import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.util.Secret;
 import io.akeyless.client.model.Auth;
+import javax.annotation.Nullable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import javax.annotation.Nullable;
 
 /**
  * Email/password authentication with Akeyless.
@@ -21,15 +20,23 @@ public class EmailSyncedAuthMethod extends SyncedAuthMethod {
     @DataBoundConstructor
     public EmailSyncedAuthMethod() {}
 
-    public String getAdminEmail() { return adminEmail; }
+    public String getAdminEmail() {
+        return adminEmail;
+    }
 
     @DataBoundSetter
-    public void setAdminEmail(String adminEmail) { this.adminEmail = adminEmail; }
+    public void setAdminEmail(String adminEmail) {
+        this.adminEmail = adminEmail;
+    }
 
-    public Secret getAdminPassword() { return adminPassword; }
+    public Secret getAdminPassword() {
+        return adminPassword;
+    }
 
     @DataBoundSetter
-    public void setAdminPassword(Secret adminPassword) { this.adminPassword = adminPassword; }
+    public void setAdminPassword(Secret adminPassword) {
+        this.adminPassword = adminPassword;
+    }
 
     @Override
     public Auth buildAuth(@Nullable String accessId) {
@@ -41,13 +48,17 @@ public class EmailSyncedAuthMethod extends SyncedAuthMethod {
 
     @Override
     public boolean isConfigured(@Nullable String accessId) {
-        return adminEmail != null && !adminEmail.isBlank()
-                && adminPassword != null && !Secret.toString(adminPassword).isBlank();
+        return adminEmail != null
+                && !adminEmail.isBlank()
+                && adminPassword != null
+                && !Secret.toString(adminPassword).isBlank();
     }
 
     @Extension
     public static class DescriptorImpl extends Descriptor<SyncedAuthMethod> {
         @Override
-        public String getDisplayName() { return "Email"; }
+        public String getDisplayName() {
+            return "Email";
+        }
     }
 }

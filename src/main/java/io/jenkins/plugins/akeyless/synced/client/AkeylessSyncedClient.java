@@ -16,10 +16,6 @@ import io.akeyless.client.model.Item;
 import io.akeyless.client.model.ListItems;
 import io.akeyless.client.model.ListItemsInPathOutput;
 import io.jenkins.plugins.akeyless.synced.auth.SyncedAuthMethod;
-import okhttp3.OkHttpClient;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +28,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import okhttp3.OkHttpClient;
 
 public class AkeylessSyncedClient {
 
@@ -44,7 +43,8 @@ public class AkeylessSyncedClient {
     private V2Api api;
     private String token;
 
-    public AkeylessSyncedClient(@Nonnull String akeylessUrl, @Nullable String accessId, @Nonnull SyncedAuthMethod authMethod) {
+    public AkeylessSyncedClient(
+            @Nonnull String akeylessUrl, @Nullable String accessId, @Nonnull SyncedAuthMethod authMethod) {
         this.basePath = akeylessUrl.endsWith("/") ? akeylessUrl.substring(0, akeylessUrl.length() - 1) : akeylessUrl;
         this.accessId = accessId;
         this.authMethod = authMethod;
@@ -65,23 +65,29 @@ public class AkeylessSyncedClient {
             return token;
         }
         try {
-            LOG.log(Level.INFO, "Akeyless: authenticating with method={0}, access_id={1}",
-                    new Object[]{authMethod.getClass().getSimpleName(), accessId});
+            LOG.log(Level.INFO, "Akeyless: authenticating with method={0}, access_id={1}", new Object[] {
+                authMethod.getClass().getSimpleName(), accessId
+            });
             Auth auth = authMethod.buildAuth(accessId);
             AuthOutput authOutput = api().auth(auth);
             token = authOutput != null ? authOutput.getToken() : null;
             if (token == null || token.isEmpty()) {
                 throw new ApiException("Auth response had no token");
             }
-            LOG.log(Level.INFO, "Akeyless: authenticated successfully with {0}", authMethod.getClass().getSimpleName());
+            LOG.log(
+                    Level.INFO,
+                    "Akeyless: authenticated successfully with {0}",
+                    authMethod.getClass().getSimpleName());
             return token;
         } catch (ApiException e) {
-            LOG.log(Level.WARNING, "Akeyless: authentication failed with {0}: {1}",
-                    new Object[]{authMethod.getClass().getSimpleName(), e.getMessage()});
+            LOG.log(Level.WARNING, "Akeyless: authentication failed with {0}: {1}", new Object[] {
+                authMethod.getClass().getSimpleName(), e.getMessage()
+            });
             throw e;
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Akeyless: authentication failed with {0}: {1}",
-                    new Object[]{authMethod.getClass().getSimpleName(), e.getMessage()});
+            LOG.log(Level.WARNING, "Akeyless: authentication failed with {0}: {1}", new Object[] {
+                authMethod.getClass().getSimpleName(), e.getMessage()
+            });
             throw new ApiException("Authentication failed: " + e.getMessage());
         }
     }
@@ -240,8 +246,7 @@ public class AkeylessSyncedClient {
         }
         String certPem = out.getCertificatePem();
         String keyPem = out.getPrivateKeyPem();
-        if (certPem != null && keyPem != null
-                && !certPem.isBlank() && !keyPem.isBlank()) {
+        if (certPem != null && keyPem != null && !certPem.isBlank() && !keyPem.isBlank()) {
             return GetSecretValueResult.pemCertificate(certPem, keyPem);
         }
         if (certPem != null && !certPem.isBlank()) {
@@ -259,7 +264,8 @@ public class AkeylessSyncedClient {
     }
 
     @Nonnull
-    private static GetSecretValueResult mapOutputToResult(Map<String, Object> out, String pathForApi) throws ApiException {
+    private static GetSecretValueResult mapOutputToResult(Map<String, Object> out, String pathForApi)
+            throws ApiException {
         if (out == null || out.isEmpty()) {
             throw new ApiException("No value returned for secret: " + pathForApi);
         }
@@ -324,10 +330,13 @@ public class AkeylessSyncedClient {
             }
             return new HashMap<>(ItemTagParser.parseItemTags(item.getItemTags()));
         } catch (ApiException e) {
-            LOG.log(Level.WARNING, "Akeyless: describe-item failed for name={0}: {1}", new Object[]{name, e.getMessage()});
+            LOG.log(Level.WARNING, "Akeyless: describe-item failed for name={0}: {1}", new Object[] {
+                name, e.getMessage()
+            });
             return Collections.emptyMap();
         } catch (Exception e) {
-            LOG.log(Level.WARNING, "Akeyless: describe-item error for name={0}: {1}", new Object[]{name, e.getMessage()});
+            LOG.log(Level.WARNING, "Akeyless: describe-item error for name={0}: {1}", new Object[] {name, e.getMessage()
+            });
             return Collections.emptyMap();
         }
     }
@@ -350,7 +359,8 @@ public class AkeylessSyncedClient {
         private final String certificatePem;
         private final String privateKeyPem;
 
-        private GetSecretValueResult(String stringValue, byte[] binaryValue, String certificatePem, String privateKeyPem) {
+        private GetSecretValueResult(
+                String stringValue, byte[] binaryValue, String certificatePem, String privateKeyPem) {
             this.stringValue = stringValue;
             this.binaryValue = binaryValue;
             this.certificatePem = certificatePem;

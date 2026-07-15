@@ -10,15 +10,14 @@ import io.jenkins.plugins.akeyless.synced.config.scope.AuthenticationScopeMode;
 import io.jenkins.plugins.akeyless.synced.config.scope.GlobalAuthenticationScopeMode;
 import io.jenkins.plugins.akeyless.synced.config.scope.PerUserAuthenticationScopeMode;
 import io.jenkins.plugins.akeyless.synced.supplier.FolderListingCache;
+import java.util.List;
+import javax.annotation.Nullable;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest2;
 import org.kohsuke.stapler.interceptor.RequirePOST;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 @Extension
 public class AkeylessSyncedCredentialsProviderConfig extends jenkins.model.GlobalConfiguration {
@@ -39,6 +38,7 @@ public class AkeylessSyncedCredentialsProviderConfig extends jenkins.model.Globa
     /** @deprecated legacy string/enum from older releases; migrated in {@link #getAuthenticationScopeMode()}. */
     @Deprecated
     private String authenticationScope;
+
     private String accessId;
     private SyncedAuthMethod authMethod;
     /** Folder path: secrets are at folderPath + "/" + secretName. No listing. */
@@ -58,10 +58,14 @@ public class AkeylessSyncedCredentialsProviderConfig extends jenkins.model.Globa
      */
     private Boolean cache;
 
-    public String getAkeylessUrl() { return akeylessUrl; }
+    public String getAkeylessUrl() {
+        return akeylessUrl;
+    }
 
     @DataBoundSetter
-    public void setAkeylessUrl(String akeylessUrl) { this.akeylessUrl = akeylessUrl; }
+    public void setAkeylessUrl(String akeylessUrl) {
+        this.akeylessUrl = akeylessUrl;
+    }
 
     public AuthenticationScopeMode getAuthenticationScopeMode() {
         if (authenticationScopeMode != null) {
@@ -89,15 +93,23 @@ public class AkeylessSyncedCredentialsProviderConfig extends jenkins.model.Globa
         return akeylessUrl != null && !akeylessUrl.isBlank();
     }
 
-    public String getAccessId() { return accessId; }
+    public String getAccessId() {
+        return accessId;
+    }
 
     @DataBoundSetter
-    public void setAccessId(String accessId) { this.accessId = accessId; }
+    public void setAccessId(String accessId) {
+        this.accessId = accessId;
+    }
 
-    public SyncedAuthMethod getAuthMethod() { return authMethod; }
+    public SyncedAuthMethod getAuthMethod() {
+        return authMethod;
+    }
 
     @DataBoundSetter
-    public void setAuthMethod(SyncedAuthMethod authMethod) { this.authMethod = authMethod; }
+    public void setAuthMethod(SyncedAuthMethod authMethod) {
+        this.authMethod = authMethod;
+    }
 
     /** Folder path; when not set, pathPrefix is used (so old config works as folder path). */
     public String getFolderPath() {
@@ -107,12 +119,18 @@ public class AkeylessSyncedCredentialsProviderConfig extends jenkins.model.Globa
     }
 
     @DataBoundSetter
-    public void setFolderPath(String folderPath) { this.folderPath = folderPath; }
+    public void setFolderPath(String folderPath) {
+        this.folderPath = folderPath;
+    }
 
-    public String getSecretNames() { return secretNames; }
+    public String getSecretNames() {
+        return secretNames;
+    }
 
     @DataBoundSetter
-    public void setSecretNames(String secretNames) { this.secretNames = secretNames; }
+    public void setSecretNames(String secretNames) {
+        this.secretNames = secretNames;
+    }
 
     /** Full secret paths only (one per line). pathPrefix is not used here — it is used as folder path when Folder path is empty. */
     public String getSecretPaths() {
@@ -120,13 +138,19 @@ public class AkeylessSyncedCredentialsProviderConfig extends jenkins.model.Globa
     }
 
     @DataBoundSetter
-    public void setSecretPaths(String secretPaths) { this.secretPaths = secretPaths; }
+    public void setSecretPaths(String secretPaths) {
+        this.secretPaths = secretPaths;
+    }
 
     /** @deprecated use folderPath or secretPaths */
-    public String getPathPrefix() { return pathPrefix; }
+    public String getPathPrefix() {
+        return pathPrefix;
+    }
 
     @DataBoundSetter
-    public void setPathPrefix(String pathPrefix) { this.pathPrefix = pathPrefix; }
+    public void setPathPrefix(String pathPrefix) {
+        this.pathPrefix = pathPrefix;
+    }
 
     public Boolean getCache() {
         return cache;
@@ -144,8 +168,7 @@ public class AkeylessSyncedCredentialsProviderConfig extends jenkins.model.Globa
 
     @RequirePOST
     @SuppressWarnings("unused")
-    public FormValidation doCheckFolderPath(@QueryParameter String folderPath,
-                                            @QueryParameter String pathPrefix) {
+    public FormValidation doCheckFolderPath(@QueryParameter String folderPath, @QueryParameter String pathPrefix) {
         Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         String fp = folderPath;
         if (fp == null || fp.isBlank()) {

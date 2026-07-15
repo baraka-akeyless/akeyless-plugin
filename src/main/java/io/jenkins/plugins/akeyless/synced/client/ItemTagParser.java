@@ -47,7 +47,10 @@ final class ItemTagParser {
                 return;
             }
             com.google.gson.JsonObject o = el.getAsJsonObject();
-            if (o.has("key") && o.has("value") && o.get("key").isJsonPrimitive() && o.get("value").isJsonPrimitive()) {
+            if (o.has("key")
+                    && o.has("value")
+                    && o.get("key").isJsonPrimitive()
+                    && o.get("value").isJsonPrimitive()) {
                 out.put(o.get("key").getAsString(), o.get("value").getAsString());
             }
         } catch (RuntimeException ignored) {

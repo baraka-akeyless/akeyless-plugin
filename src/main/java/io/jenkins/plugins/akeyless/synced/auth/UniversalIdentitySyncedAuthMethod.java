@@ -4,10 +4,9 @@ import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.util.Secret;
 import io.akeyless.client.model.Auth;
+import javax.annotation.Nullable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import javax.annotation.Nullable;
 
 /**
  * Universal Identity authentication with Akeyless.
@@ -19,10 +18,14 @@ public class UniversalIdentitySyncedAuthMethod extends SyncedAuthMethod {
     @DataBoundConstructor
     public UniversalIdentitySyncedAuthMethod() {}
 
-    public Secret getUidToken() { return uidToken; }
+    public Secret getUidToken() {
+        return uidToken;
+    }
 
     @DataBoundSetter
-    public void setUidToken(Secret uidToken) { this.uidToken = uidToken; }
+    public void setUidToken(Secret uidToken) {
+        this.uidToken = uidToken;
+    }
 
     @Override
     public Auth buildAuth(@Nullable String accessId) {
@@ -35,13 +38,17 @@ public class UniversalIdentitySyncedAuthMethod extends SyncedAuthMethod {
 
     @Override
     public boolean isConfigured(@Nullable String accessId) {
-        return accessId != null && !accessId.isBlank()
-                && uidToken != null && !Secret.toString(uidToken).isBlank();
+        return accessId != null
+                && !accessId.isBlank()
+                && uidToken != null
+                && !Secret.toString(uidToken).isBlank();
     }
 
     @Extension
     public static class DescriptorImpl extends Descriptor<SyncedAuthMethod> {
         @Override
-        public String getDisplayName() { return "Universal Identity"; }
+        public String getDisplayName() {
+            return "Universal Identity";
+        }
     }
 }

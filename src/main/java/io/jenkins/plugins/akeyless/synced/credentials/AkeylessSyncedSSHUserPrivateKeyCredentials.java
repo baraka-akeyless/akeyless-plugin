@@ -11,13 +11,14 @@ import io.akeyless.client.ApiException;
 import io.jenkins.plugins.akeyless.synced.AkeylessSyncedCredentialsProvider;
 import io.jenkins.plugins.akeyless.synced.client.AkeylessSyncedClient;
 import io.jenkins.plugins.akeyless.synced.client.AkeylessSyncedClient.GetSecretValueResult;
-
-import javax.annotation.Nullable;
-
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nullable;
 
-public class AkeylessSyncedSSHUserPrivateKeyCredentials extends AkeylessSyncedCredentialBase implements SSHUserPrivateKey {
+public class AkeylessSyncedSSHUserPrivateKeyCredentials extends AkeylessSyncedCredentialBase
+        implements SSHUserPrivateKey {
+
+    private static final long serialVersionUID = 1L;
 
     private static final Secret NO_PASSPHRASE = Secret.fromString("");
 
@@ -27,12 +28,18 @@ public class AkeylessSyncedSSHUserPrivateKeyCredentials extends AkeylessSyncedCr
 
     private transient volatile SshParsed parsed;
 
-    public AkeylessSyncedSSHUserPrivateKeyCredentials(String id, String akeylessPath, String description, String usernameFromTag, String valueFormat) {
+    public AkeylessSyncedSSHUserPrivateKeyCredentials(
+            String id, String akeylessPath, String description, String usernameFromTag, String valueFormat) {
         this(id, akeylessPath, description, usernameFromTag, valueFormat, null);
     }
 
-    public AkeylessSyncedSSHUserPrivateKeyCredentials(String id, String akeylessPath, String description, String usernameFromTag, String valueFormat,
-                                                @Nullable String ownerUserId) {
+    public AkeylessSyncedSSHUserPrivateKeyCredentials(
+            String id,
+            String akeylessPath,
+            String description,
+            String usernameFromTag,
+            String valueFormat,
+            @Nullable String ownerUserId) {
         super(id, description, ownerUserId);
         this.akeylessPath = akeylessPath != null ? akeylessPath : id;
         this.usernameFromTag = usernameFromTag != null ? usernameFromTag : "";
@@ -75,7 +82,8 @@ public class AkeylessSyncedSSHUserPrivateKeyCredentials extends AkeylessSyncedCr
             try {
                 GetSecretValueResult r = client.getSecretValue(akeylessPath);
                 if (!r.isString()) {
-                    throw new CredentialsUnavailableException("Secret '" + akeylessPath + "' is binary, cannot use as SSH key");
+                    throw new CredentialsUnavailableException(
+                            "Secret '" + akeylessPath + "' is binary, cannot use as SSH key");
                 }
                 String raw = r.getStringValue();
                 boolean useJson = SecretJsonBodies.isJsonFormat(valueFormat)
@@ -83,7 +91,8 @@ public class AkeylessSyncedSSHUserPrivateKeyCredentials extends AkeylessSyncedCr
                 if (useJson) {
                     SecretJsonBodies.SshJson j = SecretJsonBodies.parseSsh(raw);
                     if (j == null) {
-                        throw new CredentialsUnavailableException("Secret '" + akeylessPath + "' JSON must include privateKey (and optionally username, passphrase) fields");
+                        throw new CredentialsUnavailableException("Secret '" + akeylessPath
+                                + "' JSON must include privateKey (and optionally username, passphrase) fields");
                     }
                     String user = !j.username.isEmpty() ? j.username : usernameFromTag;
                     Secret pass = j.passphrase.isEmpty() ? NO_PASSPHRASE : Secret.fromString(j.passphrase);
@@ -93,7 +102,8 @@ public class AkeylessSyncedSSHUserPrivateKeyCredentials extends AkeylessSyncedCr
                 }
                 return parsed;
             } catch (ApiException e) {
-                throw new CredentialsUnavailableException("Could not retrieve secret from Akeyless: " + e.getMessage(), e);
+                throw new CredentialsUnavailableException(
+                        "Could not retrieve secret from Akeyless: " + e.getMessage(), e);
             }
         }
     }
@@ -114,7 +124,9 @@ public class AkeylessSyncedSSHUserPrivateKeyCredentials extends AkeylessSyncedCr
     public static class DescriptorImpl extends BaseStandardCredentials.BaseStandardCredentialsDescriptor {
         @Override
         @NonNull
-        public String getDisplayName() { return "Akeyless SSH Private Key"; }
+        public String getDisplayName() {
+            return "Akeyless SSH Private Key";
+        }
 
         @Override
         public boolean isApplicable(CredentialsProvider scope) {

@@ -3,7 +3,6 @@ package io.jenkins.plugins.akeyless.synced.credentials;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import javax.annotation.Nullable;
 
 /**

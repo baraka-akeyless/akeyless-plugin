@@ -14,11 +14,10 @@ import hudson.security.ACLContext;
 import hudson.security.Permission;
 import io.jenkins.plugins.akeyless.synced.config.AkeylessSyncedCredentialsProviderConfig;
 import io.jenkins.plugins.akeyless.synced.supplier.SyncedCredentialsSupplier;
-import jenkins.model.Jenkins;
-import org.springframework.security.core.Authentication;
-
 import java.util.Collections;
 import java.util.List;
+import jenkins.model.Jenkins;
+import org.springframework.security.core.Authentication;
 
 public class AkeylessSyncedCredentialsStore extends CredentialsStore {
 
@@ -88,7 +87,8 @@ public class AkeylessSyncedCredentialsStore extends CredentialsStore {
     }
 
     @Override
-    public boolean updateCredentials(@NonNull Domain domain, @NonNull Credentials current, @NonNull Credentials replacement) {
+    public boolean updateCredentials(
+            @NonNull Domain domain, @NonNull Credentials current, @NonNull Credentials replacement) {
         throw new UnsupportedOperationException("Jenkins may not update credentials in Akeyless");
     }
 

@@ -4,14 +4,6 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.ProxyConfiguration;
 import hudson.util.Secret;
-import jenkins.model.Jenkins;
-import okhttp3.Authenticator;
-import okhttp3.Credentials;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.Route;
-
 import java.io.IOException;
 import java.net.Proxy;
 import java.net.ProxySelector;
@@ -22,6 +14,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jenkins.model.Jenkins;
+import okhttp3.Authenticator;
+import okhttp3.Credentials;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.Route;
 
 /**
  * Applies Jenkins {@link ProxyConfiguration} (Manage Jenkins → System → HTTP Proxy Configuration)
@@ -50,8 +49,9 @@ public final class JenkinsProxyOkHttp {
         if (proxy == null || proxy.getName() == null || proxy.getName().isBlank()) {
             return builder;
         }
-        LOG.log(Level.FINE, "Akeyless Credentials Provider: using Jenkins HTTP proxy {0}:{1}",
-                new Object[]{proxy.getName(), proxy.getPort()});
+        LOG.log(Level.FINE, "Akeyless Credentials Provider: using Jenkins HTTP proxy {0}:{1}", new Object[] {
+            proxy.getName(), proxy.getPort()
+        });
         builder.proxySelector(new JenkinsProxySelector());
         builder.proxyAuthenticator(new JenkinsProxyAuthenticator());
         return builder;
@@ -84,7 +84,11 @@ public final class JenkinsProxyOkHttp {
 
         @Nullable
         @Override
-        public Request authenticate(@Nullable Route route, Response response) throws IOException {
+        @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(
+                value = "NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION",
+                justification =
+                        "OkHttp Authenticator.authenticate marks Route as org.jetbrains.annotations.Nullable; SpotBugs does not treat that as matching edu.umd.cs.findbugs.annotations.Nullable")
+        public Request authenticate(@Nullable Route route, @NonNull Response response) throws IOException {
             ProxyConfiguration proxy = currentProxy();
             if (proxy == null || proxy.getUserName() == null) {
                 return null;
@@ -97,13 +101,15 @@ public final class JenkinsProxyOkHttp {
                 return null;
             }
             if (!proxyAuthenticateHeader.toLowerCase(Locale.ROOT).startsWith("basic")) {
-                LOG.log(Level.WARNING,
+                LOG.log(
+                        Level.WARNING,
                         "Akeyless Credentials Provider: unsupported proxy authentication scheme: {0}",
                         proxyAuthenticateHeader);
                 return null;
             }
             String credential = Credentials.basic(proxy.getUserName(), Secret.toString(proxy.getSecretPassword()));
-            return response.request().newBuilder()
+            return response.request()
+                    .newBuilder()
                     .header("Proxy-Authorization", credential)
                     .build();
         }

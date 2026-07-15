@@ -6,10 +6,9 @@ import io.jenkins.plugins.akeyless.synced.credentials.AkeylessSyncedFileCredenti
 import io.jenkins.plugins.akeyless.synced.credentials.AkeylessSyncedSSHUserPrivateKeyCredentials;
 import io.jenkins.plugins.akeyless.synced.credentials.AkeylessSyncedStringCredentials;
 import io.jenkins.plugins.akeyless.synced.credentials.AkeylessSyncedUsernamePasswordCredentials;
-
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
+import javax.annotation.Nullable;
 
 /**
  * Creates Jenkins credential instances from Akeyless item metadata (name, description, tags) and client for on-demand fetch.
@@ -29,10 +28,7 @@ public final class SyncedCredentialsFactory {
      * @return credential if type is supported, empty otherwise
      */
     public static Optional<StandardCredentials> create(
-            String id,
-            String akeylessPath,
-            String description,
-            Map<String, String> tags) {
+            String id, String akeylessPath, String description, Map<String, String> tags) {
         return create(id, akeylessPath, description, tags, null);
     }
 
@@ -45,19 +41,24 @@ public final class SyncedCredentialsFactory {
         String type = tags.getOrDefault(SyncedCredentialTags.TYPE, SyncedCredentialType.STRING);
         String username = tags.getOrDefault(SyncedCredentialTags.USERNAME, "");
         String filename = tags.getOrDefault(SyncedCredentialTags.FILENAME, id);
-        String valueFormat = tags.getOrDefault(SyncedCredentialTags.VALUE_FORMAT, "").trim();
+        String valueFormat =
+                tags.getOrDefault(SyncedCredentialTags.VALUE_FORMAT, "").trim();
 
         switch (type) {
             case SyncedCredentialType.STRING:
                 return Optional.of(new AkeylessSyncedStringCredentials(id, akeylessPath, description, ownerUserId));
             case SyncedCredentialType.USERNAME_PASSWORD:
-                return Optional.of(new AkeylessSyncedUsernamePasswordCredentials(id, akeylessPath, description, username, valueFormat, ownerUserId));
+                return Optional.of(new AkeylessSyncedUsernamePasswordCredentials(
+                        id, akeylessPath, description, username, valueFormat, ownerUserId));
             case SyncedCredentialType.SSH_USER_PRIVATE_KEY:
-                return Optional.of(new AkeylessSyncedSSHUserPrivateKeyCredentials(id, akeylessPath, description, username, valueFormat, ownerUserId));
+                return Optional.of(new AkeylessSyncedSSHUserPrivateKeyCredentials(
+                        id, akeylessPath, description, username, valueFormat, ownerUserId));
             case SyncedCredentialType.CERTIFICATE:
-                return Optional.of(new AkeylessSyncedCertificateCredentials(id, akeylessPath, description, ownerUserId));
+                return Optional.of(
+                        new AkeylessSyncedCertificateCredentials(id, akeylessPath, description, ownerUserId));
             case SyncedCredentialType.FILE:
-                return Optional.of(new AkeylessSyncedFileCredentials(id, akeylessPath, description, filename, ownerUserId));
+                return Optional.of(
+                        new AkeylessSyncedFileCredentials(id, akeylessPath, description, filename, ownerUserId));
             default:
                 return Optional.empty();
         }

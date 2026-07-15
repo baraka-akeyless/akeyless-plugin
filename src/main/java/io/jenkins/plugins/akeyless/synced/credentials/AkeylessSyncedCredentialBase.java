@@ -5,7 +5,6 @@ import com.cloudbees.plugins.credentials.CredentialsUnavailableException;
 import com.cloudbees.plugins.credentials.impl.BaseStandardCredentials;
 import io.jenkins.plugins.akeyless.synced.client.AkeylessSyncedAuthResolver;
 import io.jenkins.plugins.akeyless.synced.client.AkeylessSyncedClient;
-
 import javax.annotation.Nullable;
 
 /**
@@ -13,6 +12,8 @@ import javax.annotation.Nullable;
  * is per-user so secret fetches use that user's Akeyless identity.
  */
 public abstract class AkeylessSyncedCredentialBase extends BaseStandardCredentials {
+
+    private static final long serialVersionUID = 1L;
 
     @Nullable
     private final String ownerUserId;

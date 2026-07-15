@@ -4,10 +4,9 @@ import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.util.Secret;
 import io.akeyless.client.model.Auth;
+import javax.annotation.Nullable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import javax.annotation.Nullable;
 
 public class ApiKeySyncedAuthMethod extends SyncedAuthMethod {
 
@@ -16,10 +15,14 @@ public class ApiKeySyncedAuthMethod extends SyncedAuthMethod {
     @DataBoundConstructor
     public ApiKeySyncedAuthMethod() {}
 
-    public Secret getAccessKey() { return accessKey; }
+    public Secret getAccessKey() {
+        return accessKey;
+    }
 
     @DataBoundSetter
-    public void setAccessKey(Secret accessKey) { this.accessKey = accessKey; }
+    public void setAccessKey(Secret accessKey) {
+        this.accessKey = accessKey;
+    }
 
     @Override
     public Auth buildAuth(@Nullable String accessId) {
@@ -57,6 +60,8 @@ public class ApiKeySyncedAuthMethod extends SyncedAuthMethod {
     @Extension
     public static class DescriptorImpl extends Descriptor<SyncedAuthMethod> {
         @Override
-        public String getDisplayName() { return "API Key"; }
+        public String getDisplayName() {
+            return "API Key";
+        }
     }
 }

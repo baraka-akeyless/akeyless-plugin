@@ -5,11 +5,10 @@ import hudson.model.Descriptor;
 import io.akeyless.client.model.Auth;
 import io.jenkins.plugins.akeyless.cloudid.CloudIdProvider;
 import io.jenkins.plugins.akeyless.cloudid.CloudProviderFactory;
-import org.kohsuke.stapler.DataBoundConstructor;
-
-import javax.annotation.Nullable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nullable;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * AWS IAM authentication. Obtains cloud identity from EC2/ECS/env (SigV4-signed STS GetCallerIdentity).
@@ -31,15 +30,19 @@ public class AwsIamSyncedAuthMethod extends SyncedAuthMethod {
             cloudId = idProvider.getCloudId();
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed to generate AWS cloud ID", e);
-            throw new Exception("AWS IAM auth: could not obtain cloud identity. "
-                    + "Ensure Jenkins is running on AWS with an IAM role attached. " + e.getMessage(), e);
+            throw new Exception(
+                    "AWS IAM auth: could not obtain cloud identity. "
+                            + "Ensure Jenkins is running on AWS with an IAM role attached. " + e.getMessage(),
+                    e);
         }
         Auth auth = new Auth();
         auth.setAccessId(accessId);
         auth.setAccessType(ACCESS_TYPE);
         auth.setCloudId(cloudId);
-        LOG.log(Level.INFO, "Akeyless AWS IAM auth: sending auth request (access_id={0}, cloud_id_length={1})",
-                new Object[]{accessId, cloudId.length()});
+        LOG.log(
+                Level.INFO,
+                "Akeyless AWS IAM auth: sending auth request (access_id={0}, cloud_id_length={1})",
+                new Object[] {accessId, cloudId.length()});
         return auth;
     }
 
@@ -51,6 +54,8 @@ public class AwsIamSyncedAuthMethod extends SyncedAuthMethod {
     @Extension
     public static class DescriptorImpl extends Descriptor<SyncedAuthMethod> {
         @Override
-        public String getDisplayName() { return "AWS IAM"; }
+        public String getDisplayName() {
+            return "AWS IAM";
+        }
     }
 }

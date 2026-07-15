@@ -4,10 +4,9 @@ import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.util.Secret;
 import io.akeyless.client.model.Auth;
+import javax.annotation.Nullable;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-
-import javax.annotation.Nullable;
 
 /**
  * Certificate-based authentication with Akeyless.
@@ -21,15 +20,23 @@ public class CertificateSyncedAuthMethod extends SyncedAuthMethod {
     @DataBoundConstructor
     public CertificateSyncedAuthMethod() {}
 
-    public Secret getCertData() { return certData; }
+    public Secret getCertData() {
+        return certData;
+    }
 
     @DataBoundSetter
-    public void setCertData(Secret certData) { this.certData = certData; }
+    public void setCertData(Secret certData) {
+        this.certData = certData;
+    }
 
-    public Secret getKeyData() { return keyData; }
+    public Secret getKeyData() {
+        return keyData;
+    }
 
     @DataBoundSetter
-    public void setKeyData(Secret keyData) { this.keyData = keyData; }
+    public void setKeyData(Secret keyData) {
+        this.keyData = keyData;
+    }
 
     @Override
     public Auth buildAuth(@Nullable String accessId) {
@@ -42,14 +49,19 @@ public class CertificateSyncedAuthMethod extends SyncedAuthMethod {
 
     @Override
     public boolean isConfigured(@Nullable String accessId) {
-        return accessId != null && !accessId.isBlank()
-                && certData != null && !Secret.toString(certData).isBlank()
-                && keyData != null && !Secret.toString(keyData).isBlank();
+        return accessId != null
+                && !accessId.isBlank()
+                && certData != null
+                && !Secret.toString(certData).isBlank()
+                && keyData != null
+                && !Secret.toString(keyData).isBlank();
     }
 
     @Extension
     public static class DescriptorImpl extends Descriptor<SyncedAuthMethod> {
         @Override
-        public String getDisplayName() { return "Certificate"; }
+        public String getDisplayName() {
+            return "Certificate";
+        }
     }
 }

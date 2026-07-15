@@ -2,23 +2,21 @@ package io.jenkins.plugins.akeyless.synced.supplier;
 
 import com.cloudbees.plugins.credentials.common.StandardCredentials;
 import hudson.model.User;
+import io.akeyless.client.ApiException;
 import io.jenkins.plugins.akeyless.synced.client.AkeylessSyncedAuthResolver;
 import io.jenkins.plugins.akeyless.synced.client.AkeylessSyncedClient;
 import io.jenkins.plugins.akeyless.synced.config.AkeylessSyncedCredentialsProviderConfig;
 import io.jenkins.plugins.akeyless.synced.config.AkeylessSyncedUserAuthProperty;
 import io.jenkins.plugins.akeyless.synced.config.FolderPathRules;
-import io.jenkins.plugins.akeyless.synced.factory.SyncedCredentialsFactory;
 import io.jenkins.plugins.akeyless.synced.factory.SyncedCredentialTags;
 import io.jenkins.plugins.akeyless.synced.factory.SyncedCredentialType;
-
-import io.akeyless.client.ApiException;
-
+import io.jenkins.plugins.akeyless.synced.factory.SyncedCredentialsFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -40,7 +38,8 @@ public class SyncedCredentialsSupplier {
         return get(config, null);
     }
 
-    public static Collection<StandardCredentials> get(AkeylessSyncedCredentialsProviderConfig config, @Nullable User user) {
+    public static Collection<StandardCredentials> get(
+            AkeylessSyncedCredentialsProviderConfig config, @Nullable User user) {
         if (config == null || !config.isDiscoveryConfigured()) {
             LOG.log(Level.INFO, "Akeyless Credentials Provider: not configured (URL and secret paths required)");
             return Collections.emptyList();
@@ -52,7 +51,9 @@ public class SyncedCredentialsSupplier {
             }
             AkeylessSyncedUserAuthProperty auth = user.getProperty(AkeylessSyncedUserAuthProperty.class);
             if (auth == null || !auth.isConfigured()) {
-                LOG.log(Level.FINE, "Akeyless Credentials Provider: user {0} has no Akeyless authentication configured",
+                LOG.log(
+                        Level.FINE,
+                        "Akeyless Credentials Provider: user {0} has no Akeyless authentication configured",
                         user.getId());
                 return Collections.emptyList();
             }
@@ -65,13 +66,13 @@ public class SyncedCredentialsSupplier {
         String secretNamesInput = config.getSecretNames();
         String secretPathsInput = config.getSecretPaths();
         boolean hasSecretPaths = secretPathsInput != null && !secretPathsInput.isBlank();
-        boolean hasFolderAndNames = folderPath != null && !folderPath.isBlank()
-                && secretNamesInput != null && !secretNamesInput.isBlank();
-        boolean hasFolderOnly = folderPath != null && !folderPath.isBlank()
-                && !hasFolderAndNames
-                && !hasSecretPaths;
+        boolean hasFolderAndNames =
+                folderPath != null && !folderPath.isBlank() && secretNamesInput != null && !secretNamesInput.isBlank();
+        boolean hasFolderOnly = folderPath != null && !folderPath.isBlank() && !hasFolderAndNames && !hasSecretPaths;
         if (!hasFolderAndNames && !hasSecretPaths && !hasFolderOnly) {
-            LOG.log(Level.INFO, "Akeyless Credentials Provider: set ''Folder path'' alone (discover secrets under the folder), or ''Folder path'' + ''Secret names'', or ''Secret paths'', in Manage Jenkins → Configure System.");
+            LOG.log(
+                    Level.INFO,
+                    "Akeyless Credentials Provider: set ''Folder path'' alone (discover secrets under the folder), or ''Folder path'' + ''Secret names'', or ''Secret paths'', in Manage Jenkins → Configure System.");
             return Collections.emptyList();
         }
         try {
@@ -84,14 +85,16 @@ public class SyncedCredentialsSupplier {
             Collection<StandardCredentials> result = new ArrayList<>();
             Set<String> usedCredentialIds = new HashSet<>();
 
-            // 0) Folder path only: list-items under the folder (recursive) — credential id is usually the last path segment.
+            // 0) Folder path only: list-items under the folder (recursive) — credential id is usually the last path
+            // segment.
             if (hasFolderOnly) {
                 String folderNorm = folderPath.trim().replaceAll("/+$", "");
                 if (!folderNorm.startsWith("/")) {
                     folderNorm = "/" + folderNorm;
                 }
                 if (FolderPathRules.isForbiddenRootFolder(folderNorm)) {
-                    LOG.log(Level.WARNING,
+                    LOG.log(
+                            Level.WARNING,
                             "Akeyless Credentials Provider: folder path is root ''/'' only — discovery disabled. Set a subfolder (e.g. /CICD/secrets).");
                     return result;
                 }
@@ -102,11 +105,15 @@ public class SyncedCredentialsSupplier {
                         Map<String, String> tags = resolveTagsFromAkeyless(client, fullPath);
                         addOneCredentialForPath(result, usedCredentialIds, fullPath, tags, ownerUserId);
                     }
-                    LOG.log(Level.INFO, "Akeyless Credentials Provider: folder-only discovery found {0} item path(s) under {1}",
-                            new Object[]{discovered.size(), folderNorm});
+                    LOG.log(
+                            Level.INFO,
+                            "Akeyless Credentials Provider: folder-only discovery found {0} item path(s) under {1}",
+                            new Object[] {discovered.size(), folderNorm});
                 } catch (ApiException e) {
-                    LOG.log(Level.WARNING, "Akeyless Credentials Provider: list-items under folder={0} failed: {1}",
-                            new Object[]{folderNorm, e.getMessage()});
+                    LOG.log(
+                            Level.WARNING,
+                            "Akeyless Credentials Provider: list-items under folder={0} failed: {1}",
+                            new Object[] {folderNorm, e.getMessage()});
                 }
             }
 
@@ -118,7 +125,8 @@ public class SyncedCredentialsSupplier {
                     folderNorm = "/" + folderNorm;
                 }
                 if (FolderPathRules.isForbiddenRootFolder(folderNorm)) {
-                    LOG.log(Level.WARNING,
+                    LOG.log(
+                            Level.WARNING,
                             "Akeyless Credentials Provider: folder path is root ''/'' only — cannot resolve secrets under folder. Configure a subfolder.");
                     return result;
                 }
@@ -126,11 +134,13 @@ public class SyncedCredentialsSupplier {
                 for (String raw : names) {
                     String name = raw.trim();
                     if (name.isEmpty()) continue;
-                    String fullPath = folderNorm + "/" + name.replaceAll("^/+", "");  // e.g. /CICD/jenkins/test/test3/jenkinsai
+                    String fullPath =
+                            folderNorm + "/" + name.replaceAll("^/+", ""); // e.g. /CICD/jenkins/test/test3/jenkinsai
                     Map<String, String> tags = resolveTagsFromAkeyless(client, fullPath);
                     addOneCredentialForPath(result, usedCredentialIds, fullPath, tags, ownerUserId);
-                    LOG.log(Level.INFO, "Akeyless Credentials Provider: folder+name path={0} type={1}",
-                            new Object[]{fullPath, tags.getOrDefault(SyncedCredentialTags.TYPE, SyncedCredentialType.STRING)});
+                    LOG.log(Level.INFO, "Akeyless Credentials Provider: folder+name path={0} type={1}", new Object[] {
+                        fullPath, tags.getOrDefault(SyncedCredentialTags.TYPE, SyncedCredentialType.STRING)
+                    });
                 }
             }
 
@@ -149,7 +159,9 @@ public class SyncedCredentialsSupplier {
             if (!result.isEmpty()) {
                 Set<String> ids = new HashSet<>();
                 for (StandardCredentials c : result) ids.add(c.getId());
-                LOG.log(Level.INFO, "Akeyless Credentials Provider: {0} credential(s), ids={1}", new Object[]{result.size(), ids});
+                LOG.log(Level.INFO, "Akeyless Credentials Provider: {0} credential(s), ids={1}", new Object[] {
+                    result.size(), ids
+                });
             }
             return result;
         } catch (Exception e) {
@@ -182,7 +194,8 @@ public class SyncedCredentialsSupplier {
             return;
         }
         usedCredentialIds.add(id);
-        SyncedCredentialsFactory.create(id, full, description, defaultTags, ownerUserId).ifPresent(result::add);
+        SyncedCredentialsFactory.create(id, full, description, defaultTags, ownerUserId)
+                .ifPresent(result::add);
     }
 
     /**

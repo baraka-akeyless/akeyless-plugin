@@ -2,15 +2,14 @@ package io.jenkins.plugins.akeyless.synced.supplier;
 
 import io.akeyless.client.ApiException;
 import io.jenkins.plugins.akeyless.synced.client.AkeylessSyncedClient;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.GuardedBy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.GuardedBy;
 
 /**
  * Caches recursive {@code list-items} results for folder-only discovery to avoid hammering Akeyless on every
@@ -58,7 +57,8 @@ public final class FolderListingCache {
             @Nonnull AkeylessSyncedClient client,
             @Nonnull String folderNormalized,
             boolean cacheEnabled,
-            @Nullable String ownerUserId) throws ApiException {
+            @Nullable String ownerUserId)
+            throws ApiException {
         if (!cacheEnabled) {
             return client.listSecretItemPathsRecursive(folderNormalized);
         }
@@ -73,8 +73,10 @@ public final class FolderListingCache {
                     && cachedAtNanos != 0
                     && age >= 0
                     && age < ttlNanos) {
-                LOG.log(Level.FINE, "Akeyless Credentials Provider: list-items cache hit for folder={0} (TTL {1}s)",
-                        new Object[]{folderNormalized, ttlSec});
+                LOG.log(
+                        Level.FINE,
+                        "Akeyless Credentials Provider: list-items cache hit for folder={0} (TTL {1}s)",
+                        new Object[] {folderNormalized, ttlSec});
                 return new ArrayList<>(cachedPaths);
             }
         }
@@ -86,16 +88,17 @@ public final class FolderListingCache {
             cachedPaths = Collections.unmodifiableList(new ArrayList<>(fresh));
             cachedAtNanos = System.nanoTime();
         }
-        LOG.log(Level.INFO, "Akeyless Credentials Provider: list-items refreshed for folder={0}, {1} path(s), cache TTL {2}s",
-                new Object[]{folderNormalized, fresh.size(), ttlSec});
+        LOG.log(
+                Level.INFO,
+                "Akeyless Credentials Provider: list-items refreshed for folder={0}, {1} path(s), cache TTL {2}s",
+                new Object[] {folderNormalized, fresh.size(), ttlSec});
         return new ArrayList<>(fresh);
     }
 
     @Nonnull
     public static List<String> getOrLoad(
-            @Nonnull AkeylessSyncedClient client,
-            @Nonnull String folderNormalized,
-            boolean cacheEnabled) throws ApiException {
+            @Nonnull AkeylessSyncedClient client, @Nonnull String folderNormalized, boolean cacheEnabled)
+            throws ApiException {
         return getOrLoad(client, folderNormalized, cacheEnabled, null);
     }
 

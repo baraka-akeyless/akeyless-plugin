@@ -21,9 +21,6 @@ import hudson.security.ACL;
 import hudson.security.ACLContext;
 import io.jenkins.plugins.akeyless.synced.config.AkeylessSyncedCredentialsProviderConfig;
 import io.jenkins.plugins.akeyless.synced.supplier.SyncedCredentialsSupplier;
-import jenkins.model.Jenkins;
-import org.springframework.security.core.Authentication;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +28,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import jenkins.model.Jenkins;
+import org.springframework.security.core.Authentication;
 
 @Extension
 public class AkeylessSyncedCredentialsProvider extends CredentialsProvider {
@@ -50,10 +49,11 @@ public class AkeylessSyncedCredentialsProvider extends CredentialsProvider {
 
     @NonNull
     @Override
-    public <C extends Credentials> List<C> getCredentialsInItemGroup(@NonNull Class<C> type,
-                                                                     @CheckForNull ItemGroup itemGroup,
-                                                                     @CheckForNull Authentication authentication,
-                                                                     @NonNull List<DomainRequirement> domainRequirements) {
+    public <C extends Credentials> List<C> getCredentialsInItemGroup(
+            @NonNull Class<C> type,
+            @CheckForNull ItemGroup itemGroup,
+            @CheckForNull Authentication authentication,
+            @NonNull List<DomainRequirement> domainRequirements) {
         AkeylessSyncedCredentialsProviderConfig config = AkeylessSyncedCredentialsProviderConfig.get();
         if (config == null || !config.isDiscoveryConfigured()) {
             return Collections.emptyList();
@@ -69,8 +69,7 @@ public class AkeylessSyncedCredentialsProvider extends CredentialsProvider {
         return getGlobalCredentials(type, authentication);
     }
 
-    private static <C extends Credentials> List<C> getGlobalCredentials(
-            Class<C> type, Authentication authentication) {
+    private static <C extends Credentials> List<C> getGlobalCredentials(Class<C> type, Authentication authentication) {
         AkeylessSyncedCredentialsProviderConfig config = AkeylessSyncedCredentialsProviderConfig.get();
         if (config == null || !config.isConfigured()) {
             LOG.log(Level.FINE, "Akeyless Credentials Provider: global auth not configured");
@@ -83,8 +82,7 @@ public class AkeylessSyncedCredentialsProvider extends CredentialsProvider {
         return filterCredentials(type, SyncedCredentialsSupplier.get(config));
     }
 
-    private static <C extends Credentials> List<C> getPerUserCredentials(
-            Class<C> type, Authentication authentication) {
+    private static <C extends Credentials> List<C> getPerUserCredentials(Class<C> type, Authentication authentication) {
         AkeylessSyncedCredentialsProviderConfig config = AkeylessSyncedCredentialsProviderConfig.get();
         if (config == null) {
             return Collections.emptyList();
@@ -132,13 +130,15 @@ public class AkeylessSyncedCredentialsProvider extends CredentialsProvider {
         return User.getById(cause.getUserId(), false);
     }
 
-    private static <C extends Credentials> List<C> filterCredentials(Class<C> type, Collection<StandardCredentials> all) {
+    private static <C extends Credentials> List<C> filterCredentials(
+            Class<C> type, Collection<StandardCredentials> all) {
         List<C> filtered = all.stream()
                 .filter(c -> type.isAssignableFrom(c.getClass()))
                 .map(type::cast)
                 .collect(Collectors.toList());
-        LOG.log(Level.FINE, "Akeyless Credentials Provider: returning {0} credential(s) for type {1}",
-                new Object[]{filtered.size(), type.getSimpleName()});
+        LOG.log(Level.FINE, "Akeyless Credentials Provider: returning {0} credential(s) for type {1}", new Object[] {
+            filtered.size(), type.getSimpleName()
+        });
         return filtered;
     }
 

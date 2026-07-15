@@ -4,9 +4,8 @@ import hudson.DescriptorExtensionList;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import io.akeyless.client.model.Auth;
-import jenkins.model.Jenkins;
-
 import javax.annotation.Nullable;
+import jenkins.model.Jenkins;
 
 public abstract class SyncedAuthMethod extends AbstractDescribableImpl<SyncedAuthMethod> {
 

@@ -5,12 +5,11 @@ import hudson.model.Descriptor;
 import io.akeyless.client.model.Auth;
 import io.jenkins.plugins.akeyless.cloudid.CloudIdProvider;
 import io.jenkins.plugins.akeyless.cloudid.CloudProviderFactory;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
-
-import javax.annotation.Nullable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nullable;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 /**
  * GCP authentication. Uses akeyless-java-cloud-id-lightweight to obtain
@@ -26,10 +25,14 @@ public class GcpSyncedAuthMethod extends SyncedAuthMethod {
     @DataBoundConstructor
     public GcpSyncedAuthMethod() {}
 
-    public String getGcpAudience() { return gcpAudience; }
+    public String getGcpAudience() {
+        return gcpAudience;
+    }
 
     @DataBoundSetter
-    public void setGcpAudience(String gcpAudience) { this.gcpAudience = gcpAudience; }
+    public void setGcpAudience(String gcpAudience) {
+        this.gcpAudience = gcpAudience;
+    }
 
     @Override
     public Auth buildAuth(@Nullable String accessId) throws Exception {
@@ -39,8 +42,10 @@ public class GcpSyncedAuthMethod extends SyncedAuthMethod {
             cloudId = idProvider.getCloudId();
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Failed to generate GCP cloud ID from metadata", e);
-            throw new Exception("GCP auth: could not obtain cloud identity. "
-                    + "Ensure Jenkins is running on GCP with a service account. " + e.getMessage(), e);
+            throw new Exception(
+                    "GCP auth: could not obtain cloud identity. "
+                            + "Ensure Jenkins is running on GCP with a service account. " + e.getMessage(),
+                    e);
         }
         Auth auth = new Auth();
         auth.setAccessId(accessId);
@@ -60,6 +65,8 @@ public class GcpSyncedAuthMethod extends SyncedAuthMethod {
     @Extension
     public static class DescriptorImpl extends Descriptor<SyncedAuthMethod> {
         @Override
-        public String getDisplayName() { return "Google Cloud (GCP)"; }
+        public String getDisplayName() {
+            return "Google Cloud (GCP)";
+        }
     }
 }
