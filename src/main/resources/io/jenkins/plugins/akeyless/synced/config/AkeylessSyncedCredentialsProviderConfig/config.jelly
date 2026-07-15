@@ -1,0 +1,32 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:st="jelly:stapler">
+  <f:section title="Akeyless Synced Credentials (Credentials Provider)" name="akeyless-synced-credentials-provider">
+    <f:description>
+      Optional. When configured, Akeyless items appear as native Jenkins credentials for use with
+      <code>credentials('id')</code> / <code>withCredentials</code>. Existing Akeyless Plugin job binding
+      (<code>withAkeyless</code> / Build Wrapper) is unchanged and does not require this section.
+    </f:description>
+    <f:entry title="Akeyless URL" field="akeylessUrl" description="Your Akeyless gateway API URL (used as-is; no suffix is added). If behind a load balancer, use the full URL including path (e.g. https&#58;//gateway.example.com/api/v2).">
+      <f:textbox placeholder="https://my-gateway.akeyless.io or https://my-gateway.akeyless.io/api/v2"/>
+    </f:entry>
+    <f:dropdownDescriptorSelector title="Authentication scope" field="authenticationScopeMode" descriptors="${descriptor.getAuthenticationScopeDescriptors()}" description="Global: one Akeyless identity for all Jenkins users (configured below). Per user: each Jenkins user configures their own Akeyless auth on their profile (People → user → Configure). Works with a single Jenkins account too — that user configures Akeyless on their own profile."/>
+    <f:optionalBlock title="Global Akeyless authentication" inline="true" checked="${!instance.perUserAuthentication}">
+      <f:entry title="Access ID" field="accessId" description="Akeyless access ID (e.g. p-abc123). Required for all auth methods except Email.">
+        <f:textbox/>
+      </f:entry>
+      <f:dropdownDescriptorSelector title="Authentication Method" field="authMethod" descriptors="${descriptor.getAuthMethodDescriptors()}"/>
+    </f:optionalBlock>
+    <f:entry title="Cache" field="cache" description="When the cache is enabled, credentials are cached for 5 minutes.">
+      <f:checkbox default="true"/>
+    </f:entry>
+    <f:entry title="Folder path" field="folderPath" description="Folder in Akeyless (e.g. /CICD/jenkins/secrets). Cannot be ''/'' alone (entire vault). If you leave Secret names and Secret paths empty, items are discovered under this folder via list-items (recursive) when Cache is on. Otherwise combine folder + Secret names or use Secret paths alone.">
+      <f:textbox placeholder="/CICD/jenkins/test/test3"/>
+    </f:entry>
+    <f:entry title="Secret names" field="secretNames" description="Optional when folder-only discovery is used. Otherwise one name per line (e.g. jenkinsai). In the job use credentials('jenkinsai'). Full path = folder + '/' + name.">
+      <f:textarea placeholder="jenkinsai"/>
+    </f:entry>
+    <f:entry title="Secret paths (optional)" field="secretPaths" description="Only for full paths (e.g. /other/apikey). Do not put the folder path here — use Folder path + Secret names above for that.">
+      <f:textarea placeholder="/CICD/jenkins/other/apikey"/>
+    </f:entry>
+  </f:section>
+</j:jelly>

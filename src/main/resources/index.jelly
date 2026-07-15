@@ -1,4 +1,7 @@
 <?jelly escape-by-default='true'?>
-<div>Plugin to fetch secrets and certificates from
-    <a href="https://www.akeyless.io/">Akeyless</a> platform
+<div>
+    Fetch secrets and certificates from
+    <a href="https://www.akeyless.io/">Akeyless</a>.
+    Supports classic job binding (<code>withAkeyless</code> / Build Wrapper) and optional
+    Credentials Provider sync for native <code>credentials('id')</code> usage.
 </div>
