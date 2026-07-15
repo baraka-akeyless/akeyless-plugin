@@ -161,6 +161,32 @@ The following examples demonstrate how to authenticate and retrieve items using 
  
 ---
 
+## Synced Credentials (Credentials Provider) — optional
+
+In addition to classic job binding (`withAkeyless` / Build Wrapper), you can optionally sync Akeyless items into the Jenkins credential store for native use with `credentials('id')` / `withCredentials`.
+
+1. Open **Manage Jenkins → System**.
+2. Find **Akeyless Synced Credentials (Credentials Provider)**.
+3. Set gateway URL, authentication, and folder path / secret paths.
+4. Save, then open **Manage Jenkins → Credentials** and confirm synced items appear under the Akeyless store.
+5. Use them in a pipeline, for example:
+
+```groovy
+withCredentials([string(credentialsId: 'my-secret', variable: 'TOKEN')]) {
+  sh 'echo "secret loaded"'
+}
+```
+
+If this section is left empty, behavior is unchanged: existing freestyle / `withAkeyless` jobs continue to work as before.
+
+### Local build
+
+```bash
+mvn clean package -DskipTests
+```
+
+Install `target/akeyless.hpi` via **Manage Jenkins → Plugins → Advanced → Upload Plugin**.
+
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
