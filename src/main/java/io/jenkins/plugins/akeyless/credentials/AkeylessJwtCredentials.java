@@ -5,6 +5,7 @@ import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.Extension;
 import hudson.util.Secret;
 import io.akeyless.client.model.Auth;
+import io.jenkins.plugins.akeyless.util.AuthInputNormalizer;
 import javax.annotation.CheckForNull;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -51,7 +52,7 @@ public class AkeylessJwtCredentials extends AbstractAkeylessBaseStandardCredenti
         Auth auth = new Auth();
         auth.setAccessType("jwt");
         auth.setAccessId(accessId);
-        auth.setJwt(normalizeJwt(Secret.toString(jwt)));
+        auth.setJwt(AuthInputNormalizer.normalizeJwt(Secret.toString(jwt)));
         return auth;
     }
 
@@ -60,13 +61,6 @@ public class AkeylessJwtCredentials extends AbstractAkeylessBaseStandardCredenti
         CredentialsPayload payload = new CredentialsPayload();
         payload.setAuth(getAuth());
         return payload;
-    }
-
-    private static String normalizeJwt(String raw) {
-        if (raw == null) {
-            return "";
-        }
-        return raw.trim().replaceAll("\\s+", "");
     }
 
     @Extension
