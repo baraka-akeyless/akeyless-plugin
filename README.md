@@ -60,6 +60,8 @@ The plugin supports the following authentication methods:
   
 - [Universal Identity](https://docs.akeyless.io/docs/universal-identity)
   
+- [JWT](https://docs.akeyless.io/docs/auth-with-oauth-jwt)
+  
 - [Email](https://docs.akeyless.io/docs/email)
 
 ## Configuration
@@ -87,9 +89,10 @@ To configure the Akeyless plugin in Jenkins:
          
        * **Akeyless Universal Identity Credentials** - **Universal Identity** Authentication Method.
          
-       * **Akeyless t-Token Credentials** - **t-Token**.
+       * **Akeyless JWT** - **JWT** Authentication Method.
          
-     
+       * **Akeyless t-Token Credentials** - **t-Token**.
+              
    - Click **Add** to save the configuration.
 
 ## Retrieving Items
@@ -167,7 +170,7 @@ In addition to classic job binding (`withAkeyless` / Build Wrapper), you can opt
 
 1. Open **Manage Jenkins → System**.
 2. Find **Akeyless Synced Credentials (Credentials Provider)**.
-3. Set gateway URL, authentication, and folder path / secret paths.
+3. Set gateway URL, authentication (API Key, JWT, cloud IAM, Universal Identity, etc.), and folder path / secret paths.
 4. Save, then open **Manage Jenkins → Credentials** and confirm synced items appear under the Akeyless store.
 5. Use them in a pipeline, for example:
 
