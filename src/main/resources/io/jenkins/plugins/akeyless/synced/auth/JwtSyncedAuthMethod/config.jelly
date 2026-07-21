@@ -1,0 +1,6 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+  <f:entry title="JWT" field="jwt" description="JSON Web Token for Akeyless JWT auth method (stored encrypted). Access ID must match the JWT auth method in Akeyless.">
+    <f:password/>
+  </f:entry>
+</j:jelly>

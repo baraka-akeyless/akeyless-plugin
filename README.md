@@ -167,7 +167,7 @@ In addition to classic job binding (`withAkeyless` / Build Wrapper), you can opt
 
 1. Open **Manage Jenkins → System**.
 2. Find **Akeyless Synced Credentials (Credentials Provider)**.
-3. Set gateway URL, authentication, and folder path / secret paths.
+3. Set gateway URL, authentication (API Key, JWT, cloud IAM, Universal Identity, etc.), and folder path / secret paths.
 4. Save, then open **Manage Jenkins → Credentials** and confirm synced items appear under the Akeyless store.
 5. Use them in a pipeline, for example:
 
