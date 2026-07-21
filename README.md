@@ -60,6 +60,8 @@ The plugin supports the following authentication methods:
   
 - [Universal Identity](https://docs.akeyless.io/docs/universal-identity)
   
+- [JWT](https://docs.akeyless.io/docs/auth-with-oauth-jwt)
+  
 - [Email](https://docs.akeyless.io/docs/email)
 
 ## Configuration
@@ -87,9 +89,10 @@ To configure the Akeyless plugin in Jenkins:
          
        * **Akeyless Universal Identity Credentials** - **Universal Identity** Authentication Method.
          
-       * **Akeyless t-Token Credentials** - **t-Token**.
+       * **Akeyless JWT** - **JWT** Authentication Method.
          
-     
+       * **Akeyless t-Token Credentials** - **t-Token**.
+              
    - Click **Add** to save the configuration.
 
 ## Retrieving Items
